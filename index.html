@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
+  <meta name="description" content="每月导入 xlsx 训练饮食计划,每日打卡记录">
+  <title>训练打卡日志</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📓</text></svg>">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <h1 class="site-title">训练打卡日志</h1>
+      <div class="site-actions">
+        <label class="month-picker" hidden>
+          <span class="month-picker-label">月份</span>
+          <select id="month-select" aria-label="选择计划月份"></select>
+        </label>
+        <button type="button" id="btn-import" class="btn btn-primary">导入计划表</button>
+        <div class="backup-menu">
+          <button type="button" id="btn-backup" class="btn btn-ghost" aria-haspopup="true" aria-expanded="false">备份</button>
+          <div class="backup-dropdown" id="backup-dropdown" hidden>
+            <button type="button" id="btn-export-json">导出全部数据 (JSON)</button>
+            <button type="button" id="btn-import-json">从 JSON 恢复</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="site-subtitle" id="plan-subtitle" hidden></p>
+  </header>
+
+  <nav class="tab-nav" aria-label="主导航" hidden>
+    <button type="button" class="tab-btn is-active" data-tab="today" aria-current="page">今日</button>
+    <button type="button" class="tab-btn" data-tab="calendar">月历</button>
+    <button type="button" class="tab-btn" data-tab="plan">计划表</button>
+    <button type="button" class="tab-btn" data-tab="reference">参考</button>
+    <button type="button" class="tab-btn" data-tab="stats">数据</button>
+  </nav>
+
+  <main class="site-main">
+    <section id="view-today" class="view" aria-label="今日打卡"></section>
+    <section id="view-calendar" class="view" aria-label="月历" hidden></section>
+    <section id="view-plan" class="view" aria-label="完整计划表" hidden></section>
+    <section id="view-reference" class="view" aria-label="执行参考" hidden></section>
+    <section id="view-stats" class="view" aria-label="数据统计" hidden></section>
+  </main>
+
+  <div class="empty-state" id="empty-state">
+    <p class="empty-state-kicker">TRAINING LOG</p>
+    <h2 class="empty-state-title">导入本月的<br>训练与饮食计划表</h2>
+    <p class="empty-state-desc">选择你的 xlsx 计划表(格式与你正在使用的月度计划表一致),即可开始每日打卡。</p>
+    <button type="button" class="btn btn-primary btn-lg" id="btn-import-empty">选择 xlsx 文件</button>
+  </div>
+
+  <input type="file" id="file-input" accept=".xlsx,.xls" hidden>
+  <input type="file" id="json-input" accept=".json,application/json" hidden>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript><p style="padding:2rem">本页面需要启用 JavaScript 才能使用。</p></noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

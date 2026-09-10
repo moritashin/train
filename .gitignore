@@ -1,0 +1,11 @@
+# 个人计划表(含身体数据,不进入仓库)
+*.xlsx
+*.xls
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 本地测试
+node_modules/
+*.log

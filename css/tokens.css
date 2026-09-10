@@ -1,0 +1,59 @@
+/* ============================================
+   设计变量 — 明亮 Editorial 风
+   暖纸白底 + 墨色 + 朱红印章点缀
+   ============================================ */
+
+:root {
+  /* 色板 */
+  --color-paper: oklch(97.2% 0.008 85);
+  --color-paper-raised: oklch(99.2% 0.005 90);
+  --color-paper-sunken: oklch(94.5% 0.012 80);
+  --color-ink: oklch(22% 0.02 60);
+  --color-ink-soft: oklch(42% 0.018 60);
+  --color-ink-faint: oklch(60% 0.014 65);
+  --color-seal: oklch(56% 0.2 30);
+  --color-seal-deep: oklch(46% 0.17 30);
+  --color-seal-wash: oklch(94% 0.035 45);
+  --color-line: oklch(87% 0.012 72);
+  --color-line-strong: oklch(72% 0.015 68);
+
+  /* 字体 */
+  --font-display: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
+  --font-body: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+
+  /* 字号(流体) */
+  --text-hero: clamp(2.75rem, 1.6rem + 7vw, 5.5rem);
+  --text-title: clamp(1.625rem, 1.3rem + 1.8vw, 2.5rem);
+  --text-heading: clamp(1.25rem, 1.1rem + 0.8vw, 1.625rem);
+  --text-lead: clamp(1.05rem, 0.98rem + 0.4vw, 1.2rem);
+  --text-base: 1rem;
+  --text-small: 0.875rem;
+  --text-caption: 0.75rem;
+
+  /* 间距 */
+  --space-page-x: clamp(1.25rem, 0.9rem + 2vw, 3rem);
+  --space-section: clamp(2.5rem, 2rem + 2.5vw, 5rem);
+  --space-card: clamp(1.25rem, 1rem + 1.2vw, 2.25rem);
+  --space-stack: clamp(1rem, 0.8rem + 0.8vw, 1.5rem);
+
+  /* 线条与圆角 */
+  --line-thin: 1px;
+  --line-bold: 2px;
+  --radius-card: 4px;
+  --radius-pill: 999px;
+
+  /* 动效 */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-stamp: 380ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-stamp: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* 阴影(克制的纸感层次) */
+  --shadow-card: 0 1px 0 var(--color-line), 0 12px 32px -18px oklch(40% 0.02 60 / 0.25);
+  --shadow-raised: 0 2px 0 var(--color-line), 0 24px 48px -20px oklch(40% 0.02 60 / 0.3);
+
+  /* 布局 */
+  --content-max: 72rem;
+}
