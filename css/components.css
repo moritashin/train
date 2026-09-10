@@ -592,6 +592,11 @@
   outline: none;
 }
 
+.metric-field input:disabled, .metric-field textarea:disabled {
+  color: var(--color-ink-faint);
+  cursor: not-allowed;
+}
+
 .metric-field .metric-unit {
   font-family: var(--font-body);
   font-size: var(--text-caption);
@@ -617,6 +622,32 @@
   grid-template-columns: repeat(7, 1fr);
   border-top: var(--line-bold) solid var(--color-ink);
   border-left: var(--line-thin) solid var(--color-line);
+}
+
+/* 月历 + 详情面板:宽屏左右分栏,窄屏上下堆叠 */
+.calendar-layout {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .calendar-layout {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+
+  .calendar-detail {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+.calendar-detail-head {
+  margin-bottom: 1rem;
+}
+
+.calendar-cell.is-selected {
+  box-shadow: inset 0 0 0 2px var(--color-ink);
 }
 
 .calendar-weekday {
@@ -706,7 +737,8 @@
 
 .calendar-legend {
   display: flex;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
   margin-top: 1rem;
   font-size: var(--text-caption);
   color: var(--color-ink-faint);

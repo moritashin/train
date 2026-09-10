@@ -72,7 +72,6 @@ function ctx() {
       state.activeDate = dateStr;
       refresh();
     },
-    switchTab,
     refresh,
     toast,
   };

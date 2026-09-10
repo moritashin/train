@@ -14,14 +14,12 @@ function el(tag, className, text) {
 
 /** 渲染今日(或指定日期)视图 */
 export function renderToday(container, ctx) {
-  const { plan, monthKey, activeDate } = ctx;
+  const { plan, activeDate } = ctx;
   container.replaceChildren();
 
   const dayIdx = plan.days.findIndex((d) => d.date === activeDate);
   const day = dayIdx >= 0 ? plan.days[dayIdx] : null;
-  const checkin = getCheckin(monthKey, activeDate);
   const isToday = activeDate === todayStr();
-  const isFuture = activeDate > todayStr();
 
   container.appendChild(renderTopRow(ctx, day, dayIdx, isToday));
 
@@ -29,12 +27,29 @@ export function renderToday(container, ctx) {
     container.appendChild(renderOutOfRange(ctx, activeDate));
     return;
   }
+  container.appendChild(renderDayDetail(ctx, activeDate));
+}
 
-  container.appendChild(renderExerciseCard(day, isToday));
-  container.appendChild(renderMealGrid(day));
-  container.appendChild(
+/**
+ * 某一天的完整内容(运动卡 + 三餐 + 打卡清单 + 体测备注)
+ * 今日视图与月历详情面板共用
+ */
+export function renderDayDetail(ctx, dateStr) {
+  const { plan, monthKey } = ctx;
+  const day = plan.days.find((d) => d.date === dateStr);
+  if (!day) return null;
+
+  const checkin = getCheckin(monthKey, dateStr);
+  const isToday = dateStr === todayStr();
+  const isFuture = dateStr > todayStr();
+
+  const frag = document.createDocumentFragment();
+  frag.append(
+    renderExerciseCard(day, isToday),
+    renderMealGrid(day),
     renderCheckSection(ctx, day, checkin, isToday, isFuture),
   );
+  return frag;
 }
 
 /* ---------- 今天不在计划范围内 ---------- */
@@ -181,7 +196,7 @@ function renderCheckSection(ctx, day, checkin, isToday, isFuture) {
   }
   section.appendChild(list);
 
-  section.appendChild(renderMetricRow(ctx, day, checkin));
+  section.appendChild(renderMetricRow(ctx, day, checkin, isFuture));
   return section;
 }
 
@@ -224,7 +239,7 @@ function renderCheckItem(ctx, day, item, checks, effective, isFuture) {
 
 /* ---------- 体测与备注 ---------- */
 
-function renderMetricRow(ctx, day, checkin) {
+function renderMetricRow(ctx, day, checkin, isFuture) {
   const { plan, monthKey } = ctx;
   const row = el('div', 'metric-row');
   const isWeighDay = plan.weighDays.includes(day.date);
@@ -245,6 +260,7 @@ function renderMetricRow(ctx, day, checkin) {
     input.inputMode = 'decimal';
     input.setAttribute('aria-label', `${metric.label}(${metric.unit})`);
     input.value = checkin?.[metric.key] ?? '';
+    input.disabled = isFuture;
 
     input.addEventListener('change', () => {
       const num = input.value === '' ? null : Number(input.value);
@@ -269,6 +285,7 @@ function renderMetricRow(ctx, day, checkin) {
     textarea.placeholder = '特殊情况 / 感受…';
     textarea.setAttribute('aria-label', '备注');
     textarea.value = checkin?.note || '';
+    textarea.disabled = isFuture;
     textarea.addEventListener('change', () => {
       updateCheckin(monthKey, day.date, { note: textarea.value.trim() });
       ctx.toast('备注已保存');
