@@ -13,6 +13,7 @@ import {
   todayStr,
 } from './store.js';
 import { importXlsxFile } from './xlsx-import.js';
+import { downloadTemplateXlsx } from './xlsx-template.js';
 import { renderToday } from './views/today.js';
 import { renderCalendar } from './views/calendar.js';
 import { renderPlan } from './views/plan.js';
@@ -99,14 +100,6 @@ function switchTab(name) {
   refresh();
 }
 
-/** 月份切换后,activeDate 取计划内含今天的日期,否则第一天 */
-function resolveActiveDate(plan) {
-  const today = todayStr();
-  if (plan.days.some((d) => d.date === today)) return today;
-  const prev = plan.days.map((d) => d.date).filter((d) => d <= today).at(-1);
-  return prev || plan.days[0].date;
-}
-
 function renderShell() {
   const monthKeys = listMonthKeys();
   const hasPlan = monthKeys.length > 0;
@@ -123,7 +116,8 @@ function renderShell() {
 
   state.monthKey = getActiveMonth();
   const plan = getPlan(state.monthKey);
-  state.activeDate = resolveActiveDate(plan);
+  // 今日视图始终落在真实今天;今天不在计划内时由视图层提示
+  state.activeDate = todayStr();
 
   dom.monthSelect.replaceChildren();
   for (const key of monthKeys) {
@@ -158,6 +152,19 @@ async function handleXlsxFile(file) {
   } catch (error) {
     console.error(error);
     toast(error.message || '解析失败,请检查文件格式', true);
+  }
+}
+
+/* ---------- 模版下载 ---------- */
+
+async function handleTemplateDownload() {
+  toast('正在生成模版表格…');
+  try {
+    await downloadTemplateXlsx();
+    toast('模版已下载,填写后点「导入计划表」即可');
+  } catch (error) {
+    console.error(error);
+    toast(error.message || '模版生成失败,请检查网络后重试', true);
   }
 }
 
@@ -212,6 +219,10 @@ function bindEvents() {
     handleXlsxFile(dom.fileInput.files[0]);
     dom.fileInput.value = '';
   });
+
+  for (const id of ['btn-template', 'btn-template-empty']) {
+    document.getElementById(id).addEventListener('click', handleTemplateDownload);
+  }
 
   dom.btnBackup.addEventListener('click', () => {
     const open = dom.backupDropdown.hidden;

@@ -21,6 +21,7 @@
           <select id="month-select" aria-label="选择计划月份"></select>
         </label>
         <button type="button" id="btn-import" class="btn btn-primary">导入计划表</button>
+        <button type="button" id="btn-template" class="btn btn-ghost">下载模版</button>
         <div class="backup-menu">
           <button type="button" id="btn-backup" class="btn btn-ghost" aria-haspopup="true" aria-expanded="false">备份</button>
           <div class="backup-dropdown" id="backup-dropdown" hidden>
@@ -54,6 +55,7 @@
     <h2 class="empty-state-title">导入本月的<br>训练与饮食计划表</h2>
     <p class="empty-state-desc">选择你的 xlsx 计划表(格式与你正在使用的月度计划表一致),即可开始每日打卡。</p>
     <button type="button" class="btn btn-primary btn-lg" id="btn-import-empty">选择 xlsx 文件</button>
+    <p class="empty-state-alt">没有现成的表?先<button type="button" class="btn-text" id="btn-template-empty">下载模版表格</button>,按月填写后再导入。</p>
   </div>
 
   <input type="file" id="file-input" accept=".xlsx,.xls" hidden>

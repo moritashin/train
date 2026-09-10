@@ -26,19 +26,58 @@ export function renderToday(container, ctx) {
   container.appendChild(renderTopRow(ctx, day, dayIdx, isToday));
 
   if (!day) {
-    const placeholder = el('div', 'view-placeholder');
-    placeholder.append(
-      el('p', null, '这一天不在本计划的日期范围内。'),
-    );
-    container.appendChild(placeholder);
+    container.appendChild(renderOutOfRange(ctx, activeDate));
     return;
   }
 
-  container.appendChild(renderExerciseCard(day));
+  container.appendChild(renderExerciseCard(day, isToday));
   container.appendChild(renderMealGrid(day));
   container.appendChild(
-    renderCheckSection(ctx, day, checkin, isFuture),
+    renderCheckSection(ctx, day, checkin, isToday, isFuture),
   );
+}
+
+/* ---------- 今天不在计划范围内 ---------- */
+
+const MS_PER_DAY = 86400000;
+
+function fmtMonthDay(dateStr) {
+  const [, monthNum, dayNum] = dateStr.split('-').map(Number);
+  return `${monthNum}月${dayNum}日`;
+}
+
+function diffDays(fromStr, toStr) {
+  return Math.round((new Date(toStr) - new Date(fromStr)) / MS_PER_DAY);
+}
+
+function renderOutOfRange(ctx, activeDate) {
+  const { plan } = ctx;
+  const first = plan.days[0].date;
+  const last = plan.days[plan.days.length - 1].date;
+
+  const placeholder = el('div', 'view-placeholder');
+
+  if (activeDate < first) {
+    placeholder.appendChild(
+      el('p', null, `计划还没开始,从 ${fmtMonthDay(first)} 起,还有 ${diffDays(activeDate, first)} 天。`),
+    );
+    placeholder.appendChild(renderJumpBtn(ctx, first, '预览第一天'));
+  } else if (activeDate > last) {
+    placeholder.appendChild(
+      el('p', null, `本月计划已于 ${fmtMonthDay(last)} 结束。`),
+    );
+    placeholder.appendChild(renderJumpBtn(ctx, last, '查看最后一天'));
+  } else {
+    placeholder.appendChild(el('p', null, '这一天不在本计划的日期范围内。'));
+  }
+  return placeholder;
+}
+
+function renderJumpBtn(ctx, dateStr, label) {
+  const btn = el('button', 'btn btn-primary', label);
+  btn.type = 'button';
+  btn.addEventListener('click', () => ctx.setActiveDate(dateStr));
+  return btn;
 }
 
 /* ---------- 顶部:日期 + 导航 ---------- */
@@ -90,9 +129,10 @@ function renderTopRow(ctx, day, dayIdx, isToday) {
 
 /* ---------- 运动卡 ---------- */
 
-function renderExerciseCard(day) {
+function renderExerciseCard(day, isToday) {
   const card = el('article', `exercise-card${day.exercise.isRest ? ' is-rest' : ''}`);
-  card.appendChild(el('p', 'exercise-card-tag', day.exercise.isRest ? 'REST DAY' : "TODAY'S TRAINING"));
+  const tag = day.exercise.isRest ? 'REST DAY' : isToday ? "TODAY'S TRAINING" : 'TRAINING';
+  card.appendChild(el('p', 'exercise-card-tag', tag));
   card.appendChild(el('h2', 'exercise-card-name', day.exercise.name || '休息'));
   if (day.exercise.time) {
     card.appendChild(el('p', 'exercise-card-time tnum', day.exercise.time));
@@ -118,7 +158,7 @@ function renderMealGrid(day) {
 
 /* ---------- 打卡清单 ---------- */
 
-function renderCheckSection(ctx, day, checkin, isFuture) {
+function renderCheckSection(ctx, day, checkin, isToday, isFuture) {
   const { plan, monthKey } = ctx;
   const section = el('section', 'check-section');
   section.setAttribute('aria-label', '每日打卡');
@@ -129,7 +169,7 @@ function renderCheckSection(ctx, day, checkin, isFuture) {
   const { done, total } = dayCompletion(plan, checkin, day.date);
 
   const heading = el('div', 'section-heading');
-  heading.appendChild(el('h2', null, '今日打卡'));
+  heading.appendChild(el('h2', null, isToday ? '今日打卡' : '当日打卡'));
   heading.appendChild(
     el('span', 'heading-note tnum', isFuture ? '还没到这一天' : `${done} / ${total} 项`),
   );

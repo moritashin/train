@@ -400,7 +400,7 @@ export function parseWorkbook(XLSX, workbook) {
 
 let xlsxLoading = null;
 
-function loadSheetJS() {
+export function loadSheetJS() {
   if (window.XLSX) return Promise.resolve(window.XLSX);
   if (!xlsxLoading) {
     xlsxLoading = new Promise((resolve, reject) => {

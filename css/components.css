@@ -227,6 +227,23 @@
   margin-bottom: 2.25rem;
 }
 
+.empty-state-alt {
+  margin-top: 1.75rem;
+  font-size: var(--text-small);
+  color: var(--color-ink-faint);
+}
+
+.btn-text {
+  padding: 0 0.2em;
+  color: var(--color-seal);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.btn-text:hover {
+  color: var(--color-ink);
+}
+
 /* ---------- 今日视图 ---------- */
 
 .today-top {
@@ -920,4 +937,8 @@
   padding: 3rem 1rem;
   text-align: center;
   color: var(--color-ink-faint);
+}
+
+.view-placeholder .btn {
+  margin-top: 1rem;
 }
